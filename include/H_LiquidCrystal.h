@@ -7,8 +7,6 @@
 #include "sys_core.h"
 #include "rti.h"
 #include "gio.h"
-#include "adc.h"
-#include "het.h"
 
 // commands
 #define LCD_CLEARDISPLAY 0x01
@@ -122,7 +120,6 @@ void LCD_init(uint8_t fourbitmode, GIO rs, GIO rw, GIO enable,
 	// |---> [Inicializaciones varias]
 	gioInit();
 	rtiInit();
-	adcInit();
 	// <---| [Inicializaciones varias]
 
 	// |---> [Inicializacion del TIMER]
@@ -406,82 +403,14 @@ void delayMicroseconds(uint32_t timeRef_us) {
 	//	rtiStopCounter(rtiNOTIFICATION_COMPARE0);
 }
 
-// [INCIO] DECLARA AQUI LAS VARIABLES EXTERNAS
-//variables para ADC
-adcData_t ADC_RAW_AD1[3];
-int ch_count = 0;
-int Activador_Alerta = 0;
-int duty=0;
-float val=2.44;
-int Vmin=4000;
-int porcentaje=0;
-char msgStr_1[40];
-// [FIN] DECLARA AQUI LAS VARIABLES EXTERNAS
-
 // |---> [Funciones para el TIMER]
 void rtiNotification(uint32 notification) {
 	// Configurado cada 1us.
 	if (notification == rtiNOTIFICATION_COMPARE0) {
 		++__pulseCount_1us;
 		// Configurado cada 10ms.
-	} else if (notification == rtiNOTIFICATION_COMPARE1) {
-		// Inserta aqui tu codigo que va dentro de la interrupcion.
-		//		NumberOfChar = sprintf((char *) command, "Aleta1=%d   Aleta2=%d",ADC_RAW_AD1[0].value,ADC_RAW_AD1[1].value);
-		//		sciSend(scilinREG, NumberOfChar, command);
-		//		sciSend(scilinREG, 2, (unsigned char *) "\r\n");
-		//2350--> 2500
-		//2500-> 2800
-		if (ADC_RAW_AD1[0].value <= 2500 && ADC_RAW_AD1[0].value >= 2000
-				&& ADC_RAW_AD1[0].value <= 2500
-				&& ADC_RAW_AD1[1].value >= 2000) {
-			Activador_Alerta = 0;
-		}
-
-		if ((ADC_RAW_AD1[0].value > 2500 && ADC_RAW_AD1[0].value <= 2800
-				&& ADC_RAW_AD1[1].value > 2500 && ADC_RAW_AD1[1].value <= 2800)
-				|| (ADC_RAW_AD1[0].value > 1600 && ADC_RAW_AD1[0].value < 2000
-						&& ADC_RAW_AD1[1].value > 1600
-						&& ADC_RAW_AD1[1].value < 2000)) {
-			Activador_Alerta = 1;
-
-
-		} else {
-
-			if (ADC_RAW_AD1[1].value > 2800 && ADC_RAW_AD1[0].value > 2800) {
-				Activador_Alerta = 2;
-			} else {
-				if (ADC_RAW_AD1[1].value < 1600
-						&& ADC_RAW_AD1[0].value < 1600) {
-					Activador_Alerta = 3;
-				} else {
-					Activador_Alerta = 0;
-				}
-			}
-		}
-
-//		duty = (int) (ADC_RAW_AD1[2].value) * (val);
-//		porcentaje=(int) (duty * 100) / 10000;
-//		if (duty < Vmin) {
-			//perdida de los motores y activacion de la luz warning
-			//gioSetBit(gioPORTB, 0, 1);
-//			LCD_setCursor(0, 0); // col: 0 - 15 | row: 0 - 1
-//			sprintf(msgStr_1, "row_1! [%d]", porcentaje);
-//			LCD_printLn(msgStr_1);
-
-
-			//				LCD_setCursor(0, 1); // col: 0 - 15 | row: 0 - 1
-			//				sprintf(msgStr_1, "row_2! [%d]", 123);
-			//				LCD_printLn(msgStr_1);
-// Limpia la pantalla.
-//		} else {
-			//gioSetBit(gioPORTB, 0, 0);
-//			LCD_setCursor(0, 0); // col: 0 - 15 | row: 0 - 1
-//			sprintf(msgStr_1, "asawe");
-//			LCD_printLn(msgStr_1);
-
-//		}
-
 	}
+	else if (notification == rtiNOTIFICATION_COMPARE1) {}
 }
 // <---| [Funciones para el TIMER]
 

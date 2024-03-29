@@ -43,6 +43,13 @@
 
 
 /* USER CODE BEGIN (0) */
+#include "H_LiquidCrystal.h"
+
+#include <stdio.h>
+#include <math.h>
+
+#include "sci.h"
+
 /* USER CODE END */
 
 /* Include Files */
@@ -50,6 +57,34 @@
 #include "sys_common.h"
 
 /* USER CODE BEGIN (1) */
+//              |  VARIABLES  |
+
+unsigned char command[80];
+unsigned int NumberOfChar;
+
+#define PORT_LCD16x2_D4 gioPORTA
+#define BIT_LCD16x2_D4 0
+
+#define PORT_LCD16x2_D5 gioPORTA
+#define BIT_LCD16x2_D5 1
+
+#define PORT_LCD16x2_D6 gioPORTA
+#define BIT_LCD16x2_D6 2
+
+#define PORT_LCD16x2_D7 gioPORTA
+#define BIT_LCD16x2_D7 5
+
+#define PORT_LCD16x2_RS gioPORTA
+#define BIT_LCD16x2_RS 6
+
+#define PORT_LCD16x2_RW gioPORTA
+#define BIT_LCD16x2_RW 255
+
+#define PORT_LCD16x2_E gioPORTA
+#define BIT_LCD16x2_E 7
+
+GIO LCD16x2_D4, LCD16x2_D5, LCD16x2_D6, LCD16x2_D7, LCD16x2_RS, LCD16x2_RW, LCD16x2_E, GIO_NULL;
+
 /* USER CODE END */
 
 /** @fn void main(void)
@@ -61,16 +96,57 @@
 */
 
 /* USER CODE BEGIN (2) */
+void inicializaciones_puertos(void);
 /* USER CODE END */
 
 int main(void)
 {
 /* USER CODE BEGIN (3) */
-/* USER CODE END */
+    inicializaciones_puertos();
+    sciInit();
+
+
+    while (1) {
+
+        LCD_setCursor(0, 1); // col: 0 - 15 | row: 0 - 1
+        LCD_printLn("Hola mundo!");
+    }
+
+    /* USER CODE END */
 
     return 0;
 }
 
 
 /* USER CODE BEGIN (4) */
+void inicializaciones_puertos(void) {
+    LCD16x2_D4.PORT = PORT_LCD16x2_D4;
+    LCD16x2_D4.BIT = BIT_LCD16x2_D4;
+
+    LCD16x2_D5.PORT = PORT_LCD16x2_D5;
+    LCD16x2_D5.BIT = BIT_LCD16x2_D5;
+
+    LCD16x2_D6.PORT = PORT_LCD16x2_D6;
+    LCD16x2_D6.BIT = BIT_LCD16x2_D6;
+
+    LCD16x2_D7.PORT = PORT_LCD16x2_D7;
+    LCD16x2_D7.BIT = BIT_LCD16x2_D7;
+
+    LCD16x2_E.PORT = PORT_LCD16x2_E;
+    LCD16x2_E.BIT = BIT_LCD16x2_E;
+
+    LCD16x2_RW.PORT = PORT_LCD16x2_RW;
+    LCD16x2_RW.BIT = BIT_LCD16x2_RW;
+
+    LCD16x2_RS.PORT = PORT_LCD16x2_RS;
+    LCD16x2_RS.BIT = BIT_LCD16x2_RS;
+
+    GIO_NULL.PORT = NULL;
+    GIO_NULL.BIT = 0;
+
+    LCD_init(true, LCD16x2_RS, LCD16x2_RW, LCD16x2_E, LCD16x2_D4, LCD16x2_D5, LCD16x2_D6, LCD16x2_D7, GIO_NULL, GIO_NULL, GIO_NULL, GIO_NULL);
+
+    // set up the LCD's number of columns and rows:
+    LCD_begin(16, 2, LCD_5x8DOTS);
+}
 /* USER CODE END */
